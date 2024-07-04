@@ -4,58 +4,48 @@ import requests
 
 app = Flask(__name__)
 
-@app.route('/api/hello',methods=['GET'])
+
+@app.route('/api/hello', methods=['GET'])
 def hello():
+    visitor_name = request.args.get('visitor_name', 'Visitor')
+    
+    # Try to get the real IP address from the request headers
+    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+
+    # Use ipapi.co to get the location based on the IP
     try:
-        # Get visitor's name and client's ip address
-        visitor_name = request.args.get('visitor_name')
-        client_ip = request.remote_addr
+        location_data = requests.get(f'https://ipapi.co/{client_ip}/json/', timeout=5).json()
+        city = location_data.get('city', 'Unknown')
+    except requests.exceptions.RequestException:
+        city = 'Unknown'
 
-        # Retrieve location data using ipapi.co
-        location_data = requests.get(f'https://ipapi.co/{client_ip}/json/').json()
-        
-        city = location_data.get('city', '')
+    if city == 'Unknown':
+        return jsonify({
+            'client_ip': client_ip,
+            'location': city,
+            'greeting': f"Hello, {visitor_name}! We couldn't determine your location."
+        }), 200
 
-        if not city or city == 'Unknown':
-            return jsonify({
-                'greeting': f"Hello, {visitor_name}! We couldn't determine your location.",
-                'client_ip': client_ip,
-                'location': 'Unknown'
-            }), 200
-
-        # Retrieve weather data using weatherapi.com
-        weather_api_key = '4de1d8d100e74282ada131115240307'
-        weather_response = requests.get(f'http://api.weatherapi.com/v1/current.json?key={weather_api_key}&q={city}', timeout=5)
+    # Use weatherapi.com to get the weather information
+    weather_api_key = '4de1d8d100e74282ada131115240307'
+    try:
+        weather_response = requests.get(
+            f'http://api.weatherapi.com/v1/current.json?key={weather_api_key}&q={city}', timeout=5)
         weather_response.raise_for_status()
         weather_data = weather_response.json()
         temperature = weather_data['current']['temp_c']
+    except requests.exceptions.RequestException:
+        temperature = 'unknown'
 
-        greeting = f'Hello, {visitor_name}!, the temperature is {temperature} degrees celsius in {city}'
+    greeting = f'Hello, {visitor_name}!, the temperature is {temperature} degrees Celsius in {city}'
 
-        response = {
-            'client_ip': client_ip,
-            'location': city,
-            'greeting': greeting
-        }
+    response = {
+        'client_ip': client_ip,
+        'location': city,
+        'greeting': greeting
+    }
 
-        return jsonify(response), 200
-    
-    # Exceptions are caught for network issues
-    except requests.exceptions.RequestException as e:
-        error_message = f"Error fetching data from external API: {str(e)}"
-        return jsonify({'error': error_message}), 503
-    
-    #Exceptions are caught for unexpected data format
-    except KeyError as e:
-        error_message = f"Unexpected data format from API: {str(e)}"
-        return jsonify({'error': error_message}), 500
-    
-    # A fallback catch-all Exception
-    except Exception as e:
-        error_message = f"An unexpected error occurred: {str(e)}"
-        return jsonify({'error': error_message}), 500
+    return jsonify(response), 200
 
 if __name__ == '__main__':
     app.run()
-
-
