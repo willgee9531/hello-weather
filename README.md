@@ -11,7 +11,6 @@ Response:
 }
 ```
 
-Try it out:<br />
-https://hello-weather.koyeb.app/api/hello?visitor_name="Mark"<br />
+> Try it out: https://hello-weather.koyeb.app/api/hello?visitor_name="Mark"<br />
 > [!NOTE]
 > NB: This API receives as argument the visitor's name
