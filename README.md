@@ -1,8 +1,8 @@
 # hello-weather
----
-A basic web server using Flask that exposes an API endpoint that conforms to this criteria below:
-Endpoint: [GET] <example.com>/api/hello?visitor_name="Mark" (where <example.com> is the server origin)
-Response:
+
+A basic web server using Flask that exposes an API endpoint that conforms to this criteria below:\n
+Endpoint: [GET] <example.com>/api/hello?visitor_name="Mark" (where <example.com> is the server origin)\n
+Response:\n
 ```
 {
   "client_ip": "127.0.0.1", // The IP address of the requester
@@ -11,6 +11,6 @@ Response:
 }
 ```
 ---
-Try it out:
-https://hello-weather.koyeb.app/api/hello?visitor_name="Mark"
+Try it out:\n
+https://hello-weather.koyeb.app/api/hello?visitor_name="Mark"\n\n
 NB: This API receives as argument the visitor's name
