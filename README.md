@@ -1,7 +1,7 @@
 # hello-weather
 
 A basic web server using Flask that exposes an API endpoint that conforms to this criteria below:<br />
-> Endpoint: [GET] <example.com>/api/hello?visitor_name="Mark" (where <example.com> is the server origin)<br /><br />
+> Endpoint: [GET] <example.com>/api/hello?visitor_name=Mark (where <example.com> is the server origin)<br /><br />
 
 Response:
 ```
@@ -12,6 +12,6 @@ Response:
 }
 ```
 ___
-Try it out: https://hello-weather.koyeb.app/api/hello?visitor_name="Mark"<br />
+[Try it out](https://hello-weather.koyeb.app/api/hello?visitor_name=Mark)<br />
 > [!NOTE]
 > NB: This API receives as argument the visitor's name
